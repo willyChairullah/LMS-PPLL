@@ -9,29 +9,31 @@ use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\MemberClassController;
 
-// Classroom Route
-Route::get("/", [ClassroomController::class, "index"])->name("home");
-Route::get("/create", [ClassroomController::class, "create"])->name("createClass");
-Route::post("/create", [ClassroomController::class, "store"])->name("storeClass");
-Route::post("/join", [ClassroomController::class, "joinClass"])->name("joinClass");
+Route::middleware("auth")->group(function () {
+    // Classroom Route
+    Route::get("/", [ClassroomController::class, "index"])->name("home");
+    Route::get("/create", [ClassroomController::class, "create"])->name("createClass");
+    Route::post("/create", [ClassroomController::class, "store"])->name("storeClass");
+    Route::post("/join", [ClassroomController::class, "joinClass"])->name("joinClass");
 
-Route::prefix("class/{id}")->group(function () {
-    // Classroom Ensure
-    Route::get("/", [ClassroomController::class, "show"])->name("detailClass");
-    Route::delete("/out", [ClassroomController::class, "out"])->name("outClass");
+    Route::prefix("class/{id}")->group(function () {
+        // Classroom Ensure
+        Route::get("/", [ClassroomController::class, "show"])->name("detailClass");
+        Route::delete("/out", [ClassroomController::class, "out"])->name("outClass");
 
-    // Member Management
-    Route::get("/member", [MemberClassController::class, "index"])->name("memberClass");
+        // Member Management
+        Route::get("/member", [MemberClassController::class, "index"])->name("memberClass");
 
-    // Assignment
-    Route::get("/assignment", [AssignmentController::class, "assignmentClass"])->name("assignmentClass");
+        // Assignment
+        Route::get("/assignment", [AssignmentController::class, "assignmentClass"])->name("assignmentClass");
 
-    // Post 
-    Route::get("/post/{id_post}", [PostController::class, "show"])->name("detailPost");
-    Route::get('/post/{id_file}/download', [PostController::class, 'download'])->name('fileDownload');
+        // Post 
+        Route::get("/post/{id_post}", [PostController::class, "show"])->name("detailPost");
+        Route::get('/post/{id_file}/download', [PostController::class, 'download'])->name('fileDownload');
 
-    // Submission
-    Route::post("/post/{id_post}/submission", [SubmissionController::class, "store"])->name("storeSubmission");
+        // Submission
+        Route::post("/post/{id_post}/submission", [SubmissionController::class, "store"])->name("storeSubmission");
+    });
 });
 
 Route::prefix("class/{id}")->group(function () {
