@@ -16,7 +16,7 @@ Route::middleware("auth")->group(function () {
     Route::post("/create", [ClassroomController::class, "store"])->name("storeClass");
     Route::post("/join", [ClassroomController::class, "joinClass"])->name("joinClass");
 
-    Route::prefix("class/{id}")->group(function () {
+    Route::middleware("joined")->prefix("class/{id}")->group(function () {
         // Classroom Ensure
         Route::get("/", [ClassroomController::class, "show"])->name("detailClass");
         Route::delete("/out", [ClassroomController::class, "out"])->name("outClass");
