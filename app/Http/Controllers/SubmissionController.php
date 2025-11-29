@@ -42,6 +42,17 @@ class SubmissionController extends Controller
         return redirect()->back()->with(["success" => "Tugas berhasil dikumpulkan!"]);
     }
 
+    public function update(Request $request, $id, $id_submission)
+    {
+        $validation = $request->validate([
+            "score" => "required"
+        ]);
+
+        $validation["status"] = "graded";
+        Submission::where("id", $id_submission)->update($validation);
+        return redirect()->back();
+    }
+
     private function uploadSubmissionFiles(Request $request, Submission $submission)
     {
         $uploadedFiles = [];
