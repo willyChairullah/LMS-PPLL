@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    public function show($id, $id_post)
+    {
+        $userId = Auth::user()->id;
+        $isAuthor = $userId === Classroom::find($id)->user_id;
+        $submission = Submission::where("post_id", $id_post)
+            ->where("user_id", $userId)->first();
+        $post = Post::where("id", $id_post)->first();
+        $postFiles = PostFile::where("post_id", $id_post)->get();
+        return view("classroom.post-detail", compact("post", "postFiles", "id", "submission", "isAuthor"));
+    }
 
     public function createAssignment($id)
     {
@@ -122,7 +132,7 @@ class PostController extends Controller
             ]);
         }
     }
-    
+
     private function uploadPostFiles(Request $request, Post $post)
     {
         $uploadedFiles = [];
