@@ -110,6 +110,19 @@ class PostController extends Controller
         return redirect()->back()->with('success', 'Assignment berhasil diupdate!');
     }
 
+    private function generateSubmissions(Post $post, Classroom $classroom)
+    {
+        $students = $classroom->members;
+        foreach ($students as $student) {
+            Submission::create([
+                "post_id" => $post->id,
+                "user_id" => $student->id,
+                "status" => "pending",
+                "score" => 0,
+            ]);
+        }
+    }
+    
     private function uploadPostFiles(Request $request, Post $post)
     {
         $uploadedFiles = [];
