@@ -1,12 +1,9 @@
 <x-layout>
     <div class="mw-md py-4">
         <div class="d-flex flex-column gap-2">
-
-            <!-- Komponen tetap dipertahankan, nilai Blade dihapus -->
-            <x-card-assignment post="" id="" isAuthor="" />
-            <x-card-assignment post="" id="" isAuthor="" />
-            <x-card-assignment post="" id="" isAuthor="" />
-
+            @foreach ($classroom->posts as $post)
+            <x-card-assignment :post="$post" :id="$id" :isAuthor="$isAuthor" />
+            @endforeach
         </div>
     </div>
 </x-layout>

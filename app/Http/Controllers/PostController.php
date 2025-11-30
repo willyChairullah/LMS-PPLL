@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    public function show($id, $id_post)
+    {
+        $userId = Auth::user()->id;
+        $isAuthor = $userId === Classroom::find($id)->user_id;
+        $submission = Submission::where("post_id", $id_post)
+            ->where("user_id", $userId)->first();
+        $post = Post::where("id", $id_post)->first();
+        $postFiles = PostFile::where("post_id", $id_post)->get();
+        return view("classroom.post-detail", compact("post", "postFiles", "id", "submission", "isAuthor"));
+    }
 
     public function createAssignment($id)
     {
@@ -110,6 +120,19 @@ class PostController extends Controller
         return redirect()->back()->with('success', 'Assignment berhasil diupdate!');
     }
 
+    private function generateSubmissions(Post $post, Classroom $classroom)
+    {
+        $students = $classroom->members;
+        foreach ($students as $student) {
+            Submission::create([
+                "post_id" => $post->id,
+                "user_id" => $student->id,
+                "status" => "pending",
+                "score" => 0,
+            ]);
+        }
+    }
+
     private function uploadPostFiles(Request $request, Post $post)
     {
         $uploadedFiles = [];
@@ -136,6 +159,13 @@ class PostController extends Controller
         }
 
         return $uploadedFiles;
+    }
+
+    public function deletePost(Request $request, $id, $id_post)
+    {
+        Post::where("id", $id_post)->delete();
+        Submission::where("post_id")->delete();
+        return redirect()->back();
     }
 
     public function deletePostFile($id, $id_file)
